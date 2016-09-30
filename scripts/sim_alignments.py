@@ -2,7 +2,7 @@ import sys,os
 
 ctldir = sys.argv[1]+"/"
 for i in os.listdir(ctldir):
-    cmd = "echo indelible_control_files/"+i+" | ~/apps/indelible"
+    cmd = "echo indelible_control_files/"+i+" | ../indelible"
     os.system(cmd)
     
 cmd = "rm *.fas"
