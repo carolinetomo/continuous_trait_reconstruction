@@ -1,0 +1,14 @@
+source("no_dna.Rev")
+q()
+source("no_dna.Rev")
+treetrace = readTreeTrace(treesout, "clock")
+treefl <- "rb_trees/bm_nodna."+i+".tre"
+map = mapTree(file=treefl, treetrace)
+source("no_dna.Rev")
+"output/bm_nodna."+i+"_run_1.trees"
+"output/bm_nodna."+0+"_run_1.trees"
+source("no_dna.Rev")
+q()
+source("no_dna.Rev")
+.ls
+q()

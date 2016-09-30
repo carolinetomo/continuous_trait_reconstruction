@@ -1,0 +1,24 @@
+/////////////////////////////////////////////////////////////////////////////////////
+//                                                                                 //
+//  INDELible V1.03 control file - basic.txt                                       //
+//                                                                                 //
+//      A basic introduction to the structure of the INDELible control file.       //
+//                                                                                 //
+//      There are other examples in the file examples.html in the help folder      //
+//      Any one of those examples will work if cut and paste into a control file.  //
+//                                                                                 //
+/////////////////////////////////////////////////////////////////////////////////////
+
+[TYPE] NUCLEOTIDE 1	
+
+[MODEL]    modelname  	
+[submodel] JC
+[TREE] tree  
+((t1:0.8507366733,(t3:0.5397676862,(t4:0.4891033006,(t5:0.278611125,(t6:0.2047830587,(t9:0.07290133533,t10:0.07290133533):0.1318817234):0.07382806627):0.2104921756):0.05066438561):0.3109689871):1.149263327,(t2:0.6433457002,(t7:0.09223247853,t8:0.09223247853):0.5511132217):1.3566543);
+
+[PARTITIONS] partition1             
+  [tree modelname 1000]
+[EVOLVE] partition1 1 aln   
+
+
+

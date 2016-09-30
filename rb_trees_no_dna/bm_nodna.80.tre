@@ -1,0 +1,21 @@
+#NEXUS
+
+	Begin taxa;
+	Dimensions ntax=10;
+	Taxlabels
+		t1
+		t10
+		t2
+		t3
+		t4
+		t5
+		t6
+		t7
+		t8
+		t9
+		;
+End;
+
+Begin trees;
+tree TREE1 = [&R](((((t10[&index=9]:0.009912,t9[&index=8]:0.009912)[&index=10,posterior=1.000000,ccp=1.000000,height_95%_HPD={0.0010,0.0240}]:0.725748,t1[&index=7]:0.735660)[&index=11,posterior=0.382979,ccp=0.466019,height_95%_HPD={0.2876,1.2958}]:0.370383,(t4[&index=6]:0.430916,t5[&index=5]:0.430916)[&index=12,posterior=0.904255,ccp=0.466019,height_95%_HPD={0.0880,0.7830}]:0.675128)[&index=13,posterior=0.273936,ccp=0.302115,height_95%_HPD={0.3437,1.6748}]:0.374695,t2[&index=4]:1.480739)[&index=14,posterior=0.880319,ccp=0.880319,height_95%_HPD={0.6594,2.5835}]:28.519262,(((t7[&index=3]:0.015312,t8[&index=2]:0.015312)[&index=15,posterior=1.000000,ccp=1.000000,height_95%_HPD={0.0023,0.0362}]:0.143465,t6[&index=1]:0.158776)[&index=16,posterior=0.938830,ccp=0.938172,height_95%_HPD={0.0329,0.3065}]:0.312098,t3[&index=0]:0.470874)[&index=17,posterior=0.989362,ccp=0.880319,height_95%_HPD={0.1200,0.9747}]:29.529126)[&index=18,posterior=1.000000,ccp=1.000000,height_95%_HPD={30.000,30.000}]:0.000000;
+End;

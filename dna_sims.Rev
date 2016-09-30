@@ -1,0 +1,80 @@
+seqsamps <- [2,5,8]
+for (h in seqsamps){
+for (i in 0:99){
+
+fl <- "traits/traits."+i+".nex"
+contData<- readContinuousCharacterData(fl)
+#contData.excludeCharacter(5:10)
+
+numTips = contData.ntaxa()
+numNodes = numTips * 2 - 1
+names = contData.names()
+diversification ~ dnLognormal(0,1)
+turnover ~ dnGamma(4,4)
+speciation := diversification + turnover
+extinction := turnover
+sampling_fraction <- 9/150     
+psi ~ dnBDP(lambda=speciation, mu=extinction, rho=sampling_fraction, rootAge=75, nTaxa=numTips,names=names)
+mvi = 0
+moves[++mvi] = mvSubtreeScale(psi, weight=5.0)
+moves[++mvi] = mvNodeTimeSlideUniform(psi, weight=10.0)
+moves[++mvi] = mvNNI(psi, weight=5.0)
+moves[++mvi] = mvFNPR(psi, weight=5.0)
+
+outdir <- h+"output/"
+monitors[3] = mnFile(filename=outdir+i+".trees", printgen=100,
+separator = TAB, psi)
+
+logSigma ~ dnUniform(-5,5)
+sigma := 10^logSigma
+moves[++mvi] = mvSlide(logSigma, delta=1.0, tune=true, weight=2.0)
+
+perSiteRates ~ dnDirichlet([1,1,1,1,1,1,1,1,1,1])
+moves[++mvi] = mvSimplexElementScale(perSiteRates,alpha=10,tune=true,weight=4)
+#perSiteRates <- [1,1,1,1,1,1,1,1,1,1]
+
+#rootlogmass ~ dnUniform(-100,100)
+#moves[++mvi] = mvSlide(rootlogmass,delta=10,tune=true,weight=2)
+
+## estimate root state for each character
+#for (i in 1:10) {
+#  rootlogmass[i] ~ dnUniform(-100,100)
+#  moves[++mvi] = mvSlide(rootlogmass[i],delta=10,tune=true,weight=2)
+#}
+
+#logmass ~ dnPhyloBrownianMVN(psi, branchRates=1.0, siteRates=sigma*perSiteRates, rootStates=rootlogmass, nSites=10)
+logmass ~ dnPhyloBrownianREML(psi, branchRates=1.0, siteRates=sigma*perSiteRates, nSites=10)
+
+logmass.clamp( contData )
+bmv = model(sigma) #,rootlogmass)
+monitors[1] = mnScreen(printgen=100000, sigma) #,rootlogmass)
+monitors[2] = mnFile(filename=outdir+i+".log", printgen=1000, separator = TAB,sigma) #,rootlogmass)
+
+##create sequence model
+
+molfl <- h+"SAMP_alignments/SAMP.aln"+i+"_TRUE.nex"
+seqData <- readDiscreteCharacterData(molfl)
+er_prior <- v(1,1,1,1,1,1)
+er ~ dnDirichlet(er_prior)
+pi_prior <- v(1,1,1,1)
+pi ~ dnDirichlet(pi_prior)
+moves[++mvi] = mvSimplexElementScale(er)
+moves[++mvi] = mvSimplexElementScale(pi)
+Q := fnGTR(er,pi)
+alpha_prior <- 0.05
+alpha ~ dnExponential(alpha_prior)
+gamma_rates := fnDiscretizeGamma( alpha, alpha, 4 )
+moves[++mvi] = mvScale(alpha, weight=2.0)
+logClockRate ~ dnUniform(-5,5)
+clockRate := 10^logClockRate
+moves[++mvi] = mvSlide(logClockRate, delta=0.1, tune=true, weight=2.0)
+seq ~ dnPhyloCTMC(tree=psi, Q=Q, siteRates=gamma_rates, branchRates=clockRate, type="DNA")
+seq.clamp(seqData)
+
+mymcmc = mcmc(bmv, monitors, moves)
+mymcmc.burnin(generations=100000,tuningInterval=500)
+mymcmc.run(1000000)
+treetrace = readTreeTrace(outdir+i+"_run_1.trees", "clock")
+treefl <-"rb_trees_"+h+"/"+i+".tre"
+map = mapTree( file=treefl, treetrace )
+}
